@@ -284,7 +284,6 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
 
     private fun init(context: Context) {
         binding = TxVideoPlayerControllerBinding.inflate(LayoutInflater.from(context), this, true)
-
         binding.centerStart.setOnClickListener(this)
         binding.back.setOnClickListener(this)
         binding.restartOrPause.setOnClickListener(this)

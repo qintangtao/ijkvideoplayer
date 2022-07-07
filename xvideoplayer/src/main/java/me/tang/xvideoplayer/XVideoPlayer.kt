@@ -157,17 +157,19 @@ class XVideoPlayer : FrameLayout
     private var _surface: Surface? = null
     private val surface get() = _surface!!
 
-    //data
+    // data
     private var _url: String? = null
+    private val url get() = _url!!
+
     private var _headers: Map<String, String>? = null
 
-    private var skipToPosition: Long = 0
+    private var _skipToPosition: Long = 0
 
-    private var continueFromLastPosition = true
+    private var _continueFromLastPosition = true
 
     private var _bufferPercentage = 0
 
-    //
+    // types
     private var _displayType = DISPLAY_TYPE_ADAPTER
     override val displayType get() = _displayType
 
@@ -194,7 +196,6 @@ class XVideoPlayer : FrameLayout
     private var _mediaType = MEDIA_TYPE_IJK
     override val mediaType get() = _mediaType
 
-
     constructor(context: Context): this(context, null)
     constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
@@ -208,6 +209,11 @@ class XVideoPlayer : FrameLayout
         }
     }
 
+    /**
+     * 设置播放器类型
+     *
+     * @param playerType IjkPlayer or MediaPlayer.
+     */
     fun setMediaType(type: Int) {
         _mediaType = type
     }
@@ -241,7 +247,7 @@ class XVideoPlayer : FrameLayout
     }
 
     override fun start(position: Long) {
-        skipToPosition = position
+        _skipToPosition = position
         start()
     }
 
@@ -295,8 +301,13 @@ class XVideoPlayer : FrameLayout
         }
     }
 
+    /**
+     * 是否从上一次的位置继续播放
+     *
+     * @param continueFromLastPosition true从上一次的位置继续播放
+     */
     override fun continueFromLastPosition(continueFromLastPosition: Boolean) {
-        this.continueFromLastPosition = continueFromLastPosition
+        _continueFromLastPosition = continueFromLastPosition
     }
 
     override val isIdle: Boolean
@@ -472,6 +483,10 @@ class XVideoPlayer : FrameLayout
 
     override fun release() {
         // 保存播放位置
+        if (isPlaying || isBufferingPlaying || isPaused || isBufferingPaused)
+            XUtil.savePlayPosition(context, url, currentPosition)
+        else if (isCompleted)
+            XUtil.savePlayPosition(context, url, 0)
 
         // 退出全屏或小窗口
         if (isFullScreen)
@@ -520,11 +535,20 @@ class XVideoPlayer : FrameLayout
 
     override fun onPrepared(mp: IMediaPlayer) {
         XLog.d( "onPrepared -> STATE_PREPARED")
+
         _playState = PLAY_STATE_PREPARED
+
         mp.start()
+
+        if (_continueFromLastPosition) {
+            val position = XUtil.getSavedPlayPosition(context, url)
+            if (position > 0)
+                mp.seekTo(position)
+        }
+
         // 跳到指定位置播放
-        if (skipToPosition != 0L) {
-            mp.seekTo(skipToPosition)
+        if (_skipToPosition != 0L) {
+            mp.seekTo(_skipToPosition)
         }
     }
 

@@ -103,4 +103,29 @@ object XUtil {
             return  "$_mins:$_secs"
         }
     }
+
+    /**
+     * 保存播放位置，以便下次播放时接着上次的位置继续播放.
+     *
+     * @param context
+     * @param url     视频链接url
+     */
+    fun savePlayPosition(context: Context, url: String, position: Long) {
+        context.getSharedPreferences("X_VIDEO_PALYER_PLAY_POSITION", Context.MODE_PRIVATE)
+            .edit()
+            .putLong(url, position)
+            .apply()
+    }
+
+    /**
+     * 取出上次保存的播放位置
+     *
+     * @param context
+     * @param url     视频链接url
+     * @return 上次保存的播放位置
+     */
+    fun getSavedPlayPosition(context: Context, url: String): Long {
+        return context.getSharedPreferences("X_VIDEO_PALYER_PLAY_POSITION", Context.MODE_PRIVATE)
+            .getLong(url, 0)
+    }
 }
