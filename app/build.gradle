@@ -42,6 +42,8 @@ dependencies {
     implementation project(path: ':xvideoplayer')
     implementation project(path: ':xvideoplayer-controller-tx')
 
+    implementation rootProject.ext.dependencies.glide
+    kapt  rootProject.ext.dependencies['glide-compiler']
 
     //# required, enough for most devices.
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'

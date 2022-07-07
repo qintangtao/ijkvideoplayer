@@ -1,7 +1,9 @@
 package me.tang.xvideoplayer
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import me.tang.xvideoplayer.controller.tx.R
 import me.tang.xvideoplayer.controller.tx.TXVideoController
 import me.tang.xvideoplayer.databinding.ActivityMainBinding
 
@@ -18,6 +20,13 @@ class MainActivity : AppCompatActivity() {
 
         val controller = TXVideoController(this)
         controller.setTitle("之心恋人")
+        controller.imageView()?.let {
+            XLog.d("MainActivity Glide")
+            Glide.with(this)
+                .load("http://imgsrc.baidu.com/image/c0%3Dshijue%2C0%2C0%2C245%2C40/sign=304dee3ab299a9012f38537575fc600e/91529822720e0cf3f8b77cd50046f21fbe09aa5f.jpg")
+                .placeholder(R.drawable.img_default)
+                .into(it)
+        }
 
         binding.xVideoPlayer.run {
             setMediaType(XVideoPlayer.MEDIA_TYPE_IJK)
@@ -27,6 +36,8 @@ class MainActivity : AppCompatActivity() {
             //setUp("http://tanzi27niu.cdsb.mobi/wps/wp-content/uploads/2017/05/2017-05-17_17-33-30.mp4", null)
             setUp("/data/local/tmp/v1080.mp4", null)
         }
+
+
 
         binding.btnMediaAndroid.setOnClickListener {
             binding.xVideoPlayer.setMediaType(XVideoPlayer.MEDIA_TYPE_NATIVE)
