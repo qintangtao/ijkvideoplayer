@@ -180,7 +180,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
 
     override fun onPlayStateChanged(state: Int) {
         when (state) {
-            IVideoPlayer.PLAY_STATE_PREPARING -> {
+            XVideoPlayer.PLAY_STATE_PREPARING -> {
                 binding.run {
                     image.visibility = View.GONE
                     loading.visibility = View.VISIBLE
@@ -193,24 +193,24 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
                     loadText.text = "正在准备..."
                 }
             }
-            IVideoPlayer.PLAY_STATE_PREPARED -> {
+            XVideoPlayer.PLAY_STATE_PREPARED -> {
                 startUpdateProgressTimer()
             }
-            IVideoPlayer.PLAY_STATE_PLAYING -> {
+            XVideoPlayer.PLAY_STATE_PLAYING -> {
                 startDismissTopBottomTimer()
                 binding.run {
                     loading.visibility = View.GONE
                     restartOrPause.setImageResource(R.drawable.ic_player_pause)
                 }
             }
-            IVideoPlayer.PLAY_STATE_PAUSED -> {
+            XVideoPlayer.PLAY_STATE_PAUSED -> {
                 cancelDismissTopBottomTimer()
                 binding.run {
                     loading.visibility = View.GONE
                     restartOrPause.setImageResource(R.drawable.ic_player_start)
                 }
             }
-            IVideoPlayer.PLAY_STATE_BUFFERING_PLAYING -> {
+            XVideoPlayer.PLAY_STATE_BUFFERING_PLAYING -> {
                 startDismissTopBottomTimer()
                 binding.run {
                     loading.visibility = View.VISIBLE
@@ -218,7 +218,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
                     loadText.text = "正在缓冲..."
                 }
             }
-            IVideoPlayer.PLAY_STATE_BUFFERING_PAUSED -> {
+            XVideoPlayer.PLAY_STATE_BUFFERING_PAUSED -> {
                 cancelDismissTopBottomTimer()
                 binding.run {
                     loading.visibility = View.VISIBLE
@@ -226,7 +226,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
                     loadText.text = "正在缓冲..."
                 }
             }
-            IVideoPlayer.PLAY_STATE_ERROR -> {
+            XVideoPlayer.PLAY_STATE_ERROR -> {
                 cancelUpdateProgressTimer()
                 setTopBottomVisible(false)
                 binding.run {
@@ -234,7 +234,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
                     error.visibility = View.VISIBLE
                 }
             }
-            IVideoPlayer.PLAY_STATE_COMPLETED -> {
+            XVideoPlayer.PLAY_STATE_COMPLETED -> {
                 cancelUpdateProgressTimer()
                 setTopBottomVisible(false)
                 binding.run {
