@@ -22,7 +22,10 @@ import me.tang.xvideoplayer.controller.tx.databinding.TxVideoPlayerControllerBin
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+class TXVideoController : XVideoController
+    , View.OnClickListener
+    , SeekBar.OnSeekBarChangeListener
+    , TXChangeClarityDialog.OnClarityChangedListener {
 
     private lateinit var binding: TxVideoPlayerControllerBinding
 
@@ -33,10 +36,48 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
 
     private var _dismissTopBottomJob: Job? = null
 
+    // 视频链接地址
+    private var _clarities: List<XClarity>? = null
+    private val clarities get() = _clarities!!
+
+    private var _defaultClaritieIndex = 0
+
+    private val _clarityDialog by lazy { TXChangeClarityDialog(this.context) }
+
     constructor(context: Context): this(context, null)
     constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
         init(context)
+    }
+
+    fun setClarity(clarities: List<XClarity>, defaultClarityIndex: Int) {
+        if (clarities.isEmpty()) return
+
+        _clarities = clarities
+        _defaultClaritieIndex = defaultClarityIndex
+
+        val clarityGrades = ArrayList<String>()
+        clarities.forEach {
+            clarityGrades.add("${it.grade} ${it.p}")
+        }
+
+        binding.clarity.text = clarities.get(_defaultClaritieIndex).grade
+
+        // 初始化切换清晰度对话框
+        _clarityDialog.setClarityGrade(clarityGrades, defaultClarityIndex)
+        _clarityDialog.setOnClarityChangedListener(this)
+
+        // 给播放器配置视频链接地址
+        _videoPlayer?.let {
+            it.setUp(clarities.get(_defaultClaritieIndex).url, null)
+        }
+    }
+
+    override fun setVideoPlayer(videoPlayer: IVideoPlayer) {
+        super.setVideoPlayer(videoPlayer)
+        if (_clarities?.size ?: 0 > 1) {
+            videoPlayer.setUp(clarities.get(_defaultClaritieIndex).url, null)
+        }
     }
 
     override fun setTitle(title: String) {
@@ -152,6 +193,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
             }
             binding.clarity -> {
                 setTopBottomVisible(false)
+                _clarityDialog.show()
             }
             binding.retry -> videoPlayer.restart()
             binding.replay -> binding.retry.performClick()
@@ -266,6 +308,10 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
                     fullScreen.visibility = View.GONE
                     fullScreen.setImageResource(R.drawable.ic_player_shrink)
                     batteryTime.visibility = View.VISIBLE
+                    _clarities?.let {
+                        if (it.size > 1)
+                            clarity.visibility = View.VISIBLE
+                    }
                 }
                 if (!_hasRegisterBatteryReceiver) {
                     this.context.registerReceiver(_batterReceiver,
@@ -281,6 +327,23 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
             }
         }
     }
+
+    override  fun onClarityChanged(clarityIndex: Int) {
+        // 根据切换后的清晰度索引值，设置对应的视频链接地址，并从当前播放位置接着播放
+        val clarity = clarities.get(clarityIndex)
+        binding.clarity.setText(clarity.grade)
+        videoPlayer.run {
+            releasePlayer()
+            setUp(clarity.url, null)
+            start(videoPlayer.currentPosition)
+        }
+    }
+
+    override fun onClarityNotChanged() {
+        // 清晰度没有变化，对话框消失后，需要重新显示出top、bottom
+        setTopBottomVisible(true)
+    }
+
 
     private fun init(context: Context) {
         binding = TxVideoPlayerControllerBinding.inflate(LayoutInflater.from(context), this, true)

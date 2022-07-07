@@ -27,7 +27,7 @@ abstract class XVideoController : FrameLayout
 
     private var _updateProgressJob: Job? = null
 
-    private var _videoPlayer: IVideoPlayer? = null
+    protected var _videoPlayer: IVideoPlayer? = null
     val videoPlayer get() = _videoPlayer!!
 
     private var _downX = 0f
@@ -49,7 +49,7 @@ abstract class XVideoController : FrameLayout
         this.setOnTouchListener(this)
     }
 
-    fun setVideoPlayer(videoPlayer: IVideoPlayer) {
+    open fun setVideoPlayer(videoPlayer: IVideoPlayer) {
         _videoPlayer = videoPlayer
         _videoPlayer?.setOnPlayStateListener(this)
         _videoPlayer?.setOnPlayModeListener(this)
