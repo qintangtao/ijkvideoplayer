@@ -13,10 +13,31 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnFillParent"
+        android:id="@+id/btnMediaAndroid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/xVideoPlayer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btnFillCrop"
+        android:layout_marginStart="9dp"
+        android:text="MediaAndroid" />
+
+    <Button
+        android:id="@+id/btnMediaFFmpeg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/xVideoPlayer"
+        app:layout_constraintLeft_toRightOf="@+id/btnFillParent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:text="MediaFFmpeg" />
+
+    <Button
+        android:id="@+id/btnFillParent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/btnMediaAndroid"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btnFillCrop"
         android:layout_marginStart="9dp"
@@ -26,7 +47,7 @@
         android:id="@+id/btnFillCrop"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/xVideoPlayer"
+        app:layout_constraintTop_toBottomOf="@+id/btnMediaAndroid"
         app:layout_constraintLeft_toRightOf="@+id/btnFillParent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="9dp"

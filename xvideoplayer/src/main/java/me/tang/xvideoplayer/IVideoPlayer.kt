@@ -3,16 +3,24 @@ package me.tang.xvideoplayer
 
 interface IVideoPlayer {
 
-    companion object {
-
-    }
-
+    /**
+     * 显示类型
+     */
     val displayType: Int
 
+    /**
+     * 播放引擎
+     */
     val mediaType: Int
 
+    /**
+     * 播放状态
+     */
     val playState: Int
 
+    /**
+     * 窗口模式
+     */
     val windowMode: Int
 
 
@@ -77,57 +85,57 @@ interface IVideoPlayer {
     /*********************************
      * 以下9个方法是播放器在当前的播放状态
      */
-    fun isIdle(): Boolean
-    fun isPreparing(): Boolean
-    fun isPrepared(): Boolean
-    fun isBufferingPlaying(): Boolean
-    fun isBufferingPaused(): Boolean
-    fun isPlaying(): Boolean
-    fun isPaused(): Boolean
-    fun isError(): Boolean
-    fun isCompleted(): Boolean
+    val isIdle: Boolean
+    val isPreparing: Boolean
+    val isPrepared: Boolean
+    val isBufferingPlaying: Boolean
+    val isBufferingPaused: Boolean
+    val isPlaying: Boolean
+    val isPaused: Boolean
+    val isError: Boolean
+    val isCompleted: Boolean
 
     /*********************************
      * 以下3个方法是播放器的模式
      */
-    fun isFullScreen(): Boolean
-    fun isTinyWindow(): Boolean
-    fun isNormal(): Boolean
+    val isFullScreen: Boolean
+    val isTinyWindow: Boolean
+    val isNormal: Boolean
 
     /**
      * 获取最大音量
      *
      * @return 最大音量值
      */
-    fun getMaxVolume(): Int
+    val maxVolume: Int
 
     /**
      * 获取当前音量
      *
      * @return 当前音量值
      */
-    fun getVolume(): Int
+    val volume: Int
 
     /**
      * 获取办法给总时长，毫秒
      *
      * @return 视频总时长ms
      */
-    fun getDuration(): Long
+    val duration: Long
 
     /**
      * 获取当前播放的位置，毫秒
      *
      * @return 当前播放位置，ms
      */
-    fun getCurrentPosition(): Long
+    val currentPosition: Long
 
     /**
      * 获取视频缓冲百分比
      *
      * @return 缓冲白百分比
      */
-    fun getBufferPercentage(): Int
+    val bufferPercentage: Int
 
     /**
      * 获取播放速度

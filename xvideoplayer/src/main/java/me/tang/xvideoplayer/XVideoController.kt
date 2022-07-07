@@ -156,15 +156,15 @@ abstract class XVideoController : FrameLayout
 
     override fun onTouch(v: View?, event: MotionEvent): Boolean {
         // 只有全屏的时候才能拖动位置、亮度、声音
-        if (!videoPlayer.isFullScreen())
+        if (!videoPlayer.isFullScreen)
             return false
 
         // 只有在播放、暂停、缓冲的时候能够拖动改变位置、亮度和声音
-        if (videoPlayer.isIdle()
-                || videoPlayer.isError()
-                || videoPlayer.isPreparing()
-                || videoPlayer.isPrepared()
-                || videoPlayer.isCompleted()) {
+        if (videoPlayer.isIdle
+                || videoPlayer.isError
+                || videoPlayer.isPreparing
+                || videoPlayer.isPrepared
+                || videoPlayer.isCompleted) {
             hideChangePosition()
             hideChangeBrightness()
             hideChangeVolume()
@@ -192,7 +192,7 @@ abstract class XVideoController : FrameLayout
                         // 改变进度
                         cancelUpdateProgressTimer()
                         _needChangePosition = true
-                        _gestureDownPosition = videoPlayer.getCurrentPosition()
+                        _gestureDownPosition = videoPlayer.currentPosition
                     } else if (absDeltaY >= THRESHOLD) {
                         if (_downX < (width * 0.5f)) {
                             // 左侧改变亮度
@@ -201,13 +201,13 @@ abstract class XVideoController : FrameLayout
                         } else {
                             // 右侧改变声音
                             _needChangeVolume = true
-                            _gestureDownVolume = videoPlayer.getVolume()
+                            _gestureDownVolume = videoPlayer.volume
                         }
                     }
                 }
 
                 if (_needChangePosition) {
-                    val duration = videoPlayer.getDuration()
+                    val duration = videoPlayer.duration
                     val toPosition = (_gestureDownPosition + duration * deltaX / width).toLong()
                     _newPosition = Math.max(0, Math.min(duration, toPosition))
                     val newPositionProgress: Int = (100f * _newPosition / duration).toInt()
@@ -225,7 +225,7 @@ abstract class XVideoController : FrameLayout
                 }
                 if (_needChangeVolume) {
                     deltaY = -deltaY
-                    val maxVolume: Int = videoPlayer.getMaxVolume()
+                    val maxVolume: Int = videoPlayer.maxVolume
                     val deltaVolume = (maxVolume * deltaY * 3 / height).toInt()
                     var newVolume: Int = _gestureDownVolume + deltaVolume
                     newVolume = Math.max(0, Math.min(maxVolume, newVolume))

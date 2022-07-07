@@ -96,7 +96,7 @@ class XVideoPlayer : FrameLayout
         const val WINDOW_MODE_TINY = 12
 
         //////////////////////////////////////////////////
-        /// 画面类型
+        /// 显示类型
         ///
 
         /**
@@ -165,7 +165,7 @@ class XVideoPlayer : FrameLayout
 
     private var continueFromLastPosition = true
 
-    private var bufferPercentage = 0
+    private var _bufferPercentage = 0
 
     //
     private var _displayType = DISPLAY_TYPE_ADAPTER
@@ -299,59 +299,56 @@ class XVideoPlayer : FrameLayout
         this.continueFromLastPosition = continueFromLastPosition
     }
 
-    override fun isIdle(): Boolean =
-        playState == PLAY_STATE_IDLE
+    override val isIdle: Boolean
+        get() = playState == PLAY_STATE_IDLE
 
-    override fun isPreparing(): Boolean =
-        playState == PLAY_STATE_PREPARING
+    override val isPreparing: Boolean
+        get() = playState == PLAY_STATE_PREPARING
 
-    override fun isPrepared(): Boolean =
-        playState == PLAY_STATE_PREPARED
+    override val isPrepared: Boolean
+        get() =  playState == PLAY_STATE_PREPARED
 
-    override fun isBufferingPlaying(): Boolean =
-        playState == PLAY_STATE_BUFFERING_PLAYING
+    override val isBufferingPlaying: Boolean
+        get() = playState == PLAY_STATE_BUFFERING_PLAYING
 
-    override fun isBufferingPaused(): Boolean =
-        playState == PLAY_STATE_BUFFERING_PAUSED
+    override val isBufferingPaused: Boolean
+        get() = playState == PLAY_STATE_BUFFERING_PAUSED
 
-    override fun isPlaying(): Boolean =
-        playState == PLAY_STATE_PLAYING
+    override val isPlaying: Boolean
+        get() = playState == PLAY_STATE_PLAYING
 
-    override fun isPaused(): Boolean =
-        playState == PLAY_STATE_PAUSED
+    override val isPaused: Boolean
+        get() = playState == PLAY_STATE_PAUSED
 
-    override fun isError(): Boolean =
-        playState == PLAY_STATE_ERROR
+    override val isError: Boolean
+        get() = playState == PLAY_STATE_ERROR
 
-    override fun isCompleted(): Boolean =
-        playState == PLAY_STATE_COMPLETED
+    override val isCompleted: Boolean
+        get() = playState == PLAY_STATE_COMPLETED
 
-    override fun isFullScreen(): Boolean =
-        windowMode == WINDOW_MODE_FULLSCREEN
+    override val isFullScreen: Boolean
+        get() = windowMode == WINDOW_MODE_FULLSCREEN
 
-    override fun isTinyWindow(): Boolean =
-        windowMode == WINDOW_MODE_TINY
+    override val isTinyWindow: Boolean
+        get() = windowMode == WINDOW_MODE_TINY
 
-    override fun isNormal(): Boolean =
-        windowMode == WINDOW_MODE_NORMAL
+    override val isNormal: Boolean
+        get() = windowMode == WINDOW_MODE_NORMAL
 
-    override fun getMaxVolume(): Int {
-        return _audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC) ?: 0
-    }
+    override val maxVolume: Int
+        get() = _audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC) ?: 0
 
-    override fun getVolume(): Int {
-        return _audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC) ?: 0
-    }
+    override val volume: Int
+        get() = _audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC) ?: 0
 
-    override fun getDuration(): Long {
-        return _mediaPlayer?.duration ?: 0
-    }
+    override val duration: Long
+        get() = _mediaPlayer?.duration ?: 0
 
-    override fun getCurrentPosition(): Long {
-        return _mediaPlayer?.currentPosition ?: 0
-    }
+    override val currentPosition: Long
+        get() = _mediaPlayer?.currentPosition ?: 0
 
-    override fun getBufferPercentage(): Int = bufferPercentage
+    override val bufferPercentage: Int
+        get() = _bufferPercentage
 
     override fun getSpeed(speed: Float): Float {
         if (mediaPlayer is IjkMediaPlayer) {
@@ -477,10 +474,10 @@ class XVideoPlayer : FrameLayout
         // 保存播放位置
 
         // 退出全屏或小窗口
-        if (isFullScreen())
+        if (isFullScreen)
             exitFullScreen()
 
-        if (isTinyWindow())
+        if (isTinyWindow)
             exitTinyWindow()
 
         _windowMode = WINDOW_MODE_NORMAL
@@ -553,7 +550,7 @@ class XVideoPlayer : FrameLayout
     }
 
     override fun onBufferingUpdate( mp: IMediaPlayer, percent: Int) {
-        bufferPercentage = percent
+        _bufferPercentage = percent
     }
 
     override fun onInfo(mp: IMediaPlayer, what: Int, extra: Int): Boolean {

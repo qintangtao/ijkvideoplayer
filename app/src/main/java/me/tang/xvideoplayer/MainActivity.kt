@@ -20,14 +20,20 @@ class MainActivity : AppCompatActivity() {
         controller.setTitle("之心恋人")
 
         binding.xVideoPlayer.run {
-            setMediaType(XVideoPlayer.MEDIA_TYPE_NATIVE)
+            setMediaType(XVideoPlayer.MEDIA_TYPE_IJK)
             setVideoController(controller)
             //setUp("rtsp://wowzaec2demo.streamlock.net/vod/mp4", null)
-            setUp("rtsp://admin:br123456789@192.168.1.39:554/avstream", null)
+            //setUp("rtsp://admin:br123456789@192.168.1.39:554/avstream", null)
             //setUp("http://tanzi27niu.cdsb.mobi/wps/wp-content/uploads/2017/05/2017-05-17_17-33-30.mp4", null)
-            //setUp("/data/local/tmp/v1080.mp4", null)
+            setUp("/data/local/tmp/v1080.mp4", null)
         }
 
+        binding.btnMediaAndroid.setOnClickListener {
+            binding.xVideoPlayer.setMediaType(XVideoPlayer.MEDIA_TYPE_NATIVE)
+        }
+        binding.btnMediaFFmpeg.setOnClickListener {
+            binding.xVideoPlayer.setMediaType(XVideoPlayer.MEDIA_TYPE_IJK)
+        }
         binding.btnFillParent.setOnClickListener {
             binding.xVideoPlayer.setDisplayType(XTextureView.DISPLAY_TYPE_FILL_PARENT)
         }

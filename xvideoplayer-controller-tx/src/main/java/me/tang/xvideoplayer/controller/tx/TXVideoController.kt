@@ -76,12 +76,12 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
     }
 
     override fun updateProgress() {
-        val currentDuration = videoPlayer.getCurrentPosition()
-        val totalDuration = videoPlayer.getDuration()
+        val currentDuration = videoPlayer.currentPosition
+        val totalDuration = videoPlayer.duration
         val progress = (100f * currentDuration / totalDuration).toInt()
         binding.run {
             seek.setProgress(progress)
-            seek.secondaryProgress = videoPlayer.getBufferPercentage()
+            seek.secondaryProgress = videoPlayer.bufferPercentage
             position.text = XUtil.formatTime(currentDuration)
             duration.text = XUtil.formatTime(totalDuration)
             time.text = SimpleDateFormat("HH:mm", Locale.CHINA).format(Date())
@@ -128,26 +128,26 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
     override fun onClick(v: View?) {
         when(v) {
             binding.centerStart -> {
-                if (videoPlayer.isIdle())
+                if (videoPlayer.isIdle)
                     videoPlayer.start()
             }
             binding.back -> {
-                if (videoPlayer.isFullScreen())
+                if (videoPlayer.isFullScreen)
                     videoPlayer.exitFullScreen()
-                else if (videoPlayer.isTinyWindow())
+                else if (videoPlayer.isTinyWindow)
                     videoPlayer.exitTinyWindow()
             }
             binding.restartOrPause -> {
                 XLog.d("onClick -> restartOrPause -- state:${videoPlayer.playState}")
-                if (videoPlayer.isPlaying() || videoPlayer.isBufferingPlaying())
+                if (videoPlayer.isPlaying || videoPlayer.isBufferingPlaying)
                     videoPlayer.pause()
-                else if (videoPlayer.isPaused() || videoPlayer.isBufferingPaused())
+                else if (videoPlayer.isPaused || videoPlayer.isBufferingPaused)
                     videoPlayer.restart()
             }
             binding.fullScreen -> {
-                if (videoPlayer.isNormal() || videoPlayer.isTinyWindow())
+                if (videoPlayer.isNormal || videoPlayer.isTinyWindow)
                     videoPlayer.enterFullScreen()
-                else if (videoPlayer.isFullScreen())
+                else if (videoPlayer.isFullScreen)
                     videoPlayer.exitFullScreen()
             }
             binding.clarity -> {
@@ -156,10 +156,10 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
             binding.retry -> videoPlayer.restart()
             binding.replay -> binding.retry.performClick()
             this -> {
-                if (videoPlayer.isPlaying()
-                    || videoPlayer.isPaused()
-                    || videoPlayer.isBufferingPlaying()
-                    || videoPlayer.isBufferingPaused() ){
+                if (videoPlayer.isPlaying
+                    || videoPlayer.isPaused
+                    || videoPlayer.isBufferingPlaying
+                    || videoPlayer.isBufferingPaused ){
                     setTopBottomVisible(!_topBottomVisible)
                 }
             }
@@ -171,9 +171,9 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
     }
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        if (videoPlayer.isBufferingPaused() || videoPlayer.isPaused())
+        if (videoPlayer.isBufferingPaused || videoPlayer.isPaused)
             videoPlayer.restart()
-        val position = (videoPlayer.getDuration() * seekBar!!.progress / 100f).toLong()
+        val position = (videoPlayer.duration * seekBar!!.progress / 100f).toLong()
         videoPlayer.seekTo(position)
         startDismissTopBottomTimer()
     }
@@ -304,7 +304,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
         }
         _topBottomVisible = visible
         if (visible) {
-            if (!videoPlayer.isPaused() && !videoPlayer.isBufferingPaused())
+            if (!videoPlayer.isPaused && !videoPlayer.isBufferingPaused)
                 startDismissTopBottomTimer()
         } else {
             cancelDismissTopBottomTimer()
