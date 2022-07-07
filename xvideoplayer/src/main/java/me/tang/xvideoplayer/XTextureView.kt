@@ -2,18 +2,10 @@ package me.tang.xvideoplayer
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.TextureView
 import android.view.View
 
 class XTextureView : TextureView {
-
-    companion object {
-        const val DISPLAY_TYPE_ADAPTER = 0
-        const val DISPLAY_TYPE_FILL_PARENT = 1
-        const val DISPLAY_TYPE_FILL_SCROP = 2
-        const val DISPLAY_TYPE_ORIGINAL = 3
-    }
 
     private var videoHeight = 0
     private var videoWidth = 0
@@ -67,7 +59,7 @@ class XTextureView : TextureView {
         var parentWidth = (parent as View).measuredWidth
         var parentHeight = (parent as View).measuredHeight
         if (parentWidth != 0 && parentHeight != 0 && _videoWidth != 0 && _videoHeight != 0) {
-            if (displayType == DISPLAY_TYPE_FILL_PARENT) {
+            if (displayType == XVideoPlayer.DISPLAY_TYPE_FILL_PARENT) {
                 if (rotation == 90f || rotation == 270f) {
                     val tempWidth = parentWidth
                     parentWidth = parentHeight
@@ -139,10 +131,10 @@ class XTextureView : TextureView {
         }
 
         if (parentWidth != 0 && parentHeight != 0 && _videoWidth != 0 && _videoHeight != 0) {
-            if (displayType == DISPLAY_TYPE_ORIGINAL) {
+            if (displayType == XVideoPlayer.DISPLAY_TYPE_ORIGINAL) {
                 width = _videoWidth
                 height = _videoHeight
-            } else if (displayType == DISPLAY_TYPE_FILL_SCROP) {
+            } else if (displayType == XVideoPlayer.DISPLAY_TYPE_FILL_SCROP) {
                 if (rotation == 90f || rotation == 270f) {
                     val tempWidth = parentWidth
                     parentWidth = parentHeight

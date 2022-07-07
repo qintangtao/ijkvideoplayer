@@ -202,6 +202,9 @@ class XVideoPlayer : FrameLayout
         init(context, attrs)
     }
 
+    /**
+     *  设置显示类型
+     */
     fun setDisplayType(type: Int) {
         if (displayType != type) {
             _displayType = type
@@ -218,6 +221,9 @@ class XVideoPlayer : FrameLayout
         _mediaType = type
     }
 
+    /**
+     *  设置控制界面
+     */
     fun setVideoController(controller: XVideoController) {
         _videoController?.let {
             container.removeView(it)
@@ -292,7 +298,7 @@ class XVideoPlayer : FrameLayout
     }
 
     override fun setVolume(volume: Int) {
-        _audioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
     }
 
     override fun setSpeed(speed: Float) {
@@ -347,10 +353,10 @@ class XVideoPlayer : FrameLayout
         get() = windowMode == WINDOW_MODE_NORMAL
 
     override val maxVolume: Int
-        get() = _audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC) ?: 0
+        get() = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
 
     override val volume: Int
-        get() = _audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC) ?: 0
+        get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
     override val duration: Long
         get() = _mediaPlayer?.duration ?: 0
@@ -640,7 +646,7 @@ class XVideoPlayer : FrameLayout
     private fun initAudioManager() {
         _audioManager ?: context.getSystemService(Context.AUDIO_SERVICE).also {
             _audioManager = it as AudioManager?
-            _audioManager?.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         }
     }
 

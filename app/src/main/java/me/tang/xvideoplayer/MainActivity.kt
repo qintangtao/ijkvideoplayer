@@ -35,16 +35,16 @@ class MainActivity : AppCompatActivity() {
             binding.xVideoPlayer.setMediaType(XVideoPlayer.MEDIA_TYPE_IJK)
         }
         binding.btnFillParent.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XTextureView.DISPLAY_TYPE_FILL_PARENT)
+            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_FILL_PARENT)
         }
         binding.btnFillCrop.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XTextureView.DISPLAY_TYPE_FILL_SCROP)
+            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_FILL_SCROP)
         }
         binding.btnOriginal.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XTextureView.DISPLAY_TYPE_ORIGINAL)
+            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_ORIGINAL)
         }
         binding.btnAdapter.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XTextureView.DISPLAY_TYPE_ADAPTER)
+            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_ADAPTER)
         }
     }
 
