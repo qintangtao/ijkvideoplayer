@@ -6,12 +6,12 @@ interface IVideoPlayer {
     /**
      * 显示类型
      */
-    val displayType: Int
+    var displayType: Int
 
     /**
      * 播放引擎
      */
-    val mediaType: Int
+    var mediaType: Int
 
     /**
      * 播放状态
@@ -22,6 +22,84 @@ interface IVideoPlayer {
      * 窗口模式
      */
     val windowMode: Int
+
+    /**
+     * 获取最大音量
+     *
+     * @return 最大音量值
+     */
+    val maxVolume: Int
+
+
+    /**
+     * 设置音量
+     *
+     * @param volume 音量值
+     */
+    //fun setVolume(volume: Int)
+    /**
+     * 获取当前音量
+     *
+     * @return 当前音量值
+     */
+    var volume: Int
+
+    /**
+     * 获取办法给总时长，毫秒
+     *
+     * @return 视频总时长ms
+     */
+    val duration: Long
+
+    /**
+     * 获取当前播放的位置，毫秒
+     *
+     * @return 当前播放位置，ms
+     */
+    val currentPosition: Long
+
+    /**
+     * 获取视频缓冲百分比
+     *
+     * @return 缓冲白百分比
+     */
+    val bufferPercentage: Int
+
+    /**
+     * 播放速度, 目前只有IjkPlayer有效果，原生MediaPlayer暂不支持
+     *
+     * @param speed 播放速度
+     * @return 播放速度
+     */
+    var speed: Float
+
+    /**
+     * 获取网络加载速度
+     *
+     * @return 网络加载速度
+     */
+    val networkSpeed: Long
+
+
+    /*********************************
+     * 以下9个方法是播放器在当前的播放状态
+     */
+    val isIdle: Boolean
+    val isPreparing: Boolean
+    val isPrepared: Boolean
+    val isBufferingPlaying: Boolean
+    val isBufferingPaused: Boolean
+    val isPlaying: Boolean
+    val isPaused: Boolean
+    val isError: Boolean
+    val isCompleted: Boolean
+
+    /*********************************
+     * 以下3个方法是播放器的模式
+     */
+    val isFullScreen: Boolean
+    val isTinyWindow: Boolean
+    val isNormal: Boolean
 
 
     /**
@@ -61,19 +139,6 @@ interface IVideoPlayer {
      */
     fun seekTo(pos: Long)
 
-    /**
-     * 设置音量
-     *
-     * @param volume 音量值
-     */
-    fun setVolume(volume: Int)
-
-    /**
-     * 设置播放速度，目前只有IjkPlayer有效果，原生MediaPlayer暂不支持
-     *
-     * @param speed 播放速度
-     */
-    fun setSpeed(speed: Float)
 
     /**
      * 开始播放时，是否从上一次的位置继续播放
@@ -81,76 +146,6 @@ interface IVideoPlayer {
      * @param continueFromLastPosition true 接着上次的位置继续播放，false从头开始播放
      */
     fun continueFromLastPosition(continueFromLastPosition: Boolean)
-
-    /*********************************
-     * 以下9个方法是播放器在当前的播放状态
-     */
-    val isIdle: Boolean
-    val isPreparing: Boolean
-    val isPrepared: Boolean
-    val isBufferingPlaying: Boolean
-    val isBufferingPaused: Boolean
-    val isPlaying: Boolean
-    val isPaused: Boolean
-    val isError: Boolean
-    val isCompleted: Boolean
-
-    /*********************************
-     * 以下3个方法是播放器的模式
-     */
-    val isFullScreen: Boolean
-    val isTinyWindow: Boolean
-    val isNormal: Boolean
-
-    /**
-     * 获取最大音量
-     *
-     * @return 最大音量值
-     */
-    val maxVolume: Int
-
-    /**
-     * 获取当前音量
-     *
-     * @return 当前音量值
-     */
-    val volume: Int
-
-    /**
-     * 获取办法给总时长，毫秒
-     *
-     * @return 视频总时长ms
-     */
-    val duration: Long
-
-    /**
-     * 获取当前播放的位置，毫秒
-     *
-     * @return 当前播放位置，ms
-     */
-    val currentPosition: Long
-
-    /**
-     * 获取视频缓冲百分比
-     *
-     * @return 缓冲白百分比
-     */
-    val bufferPercentage: Int
-
-    /**
-     * 获取播放速度
-     *
-     * @param speed 播放速度
-     * @return 播放速度
-     */
-    fun getSpeed(speed: Float): Float
-
-    /**
-     * 获取网络加载速度
-     *
-     * @return 网络加载速度
-     */
-    fun getTcpSpeed(): Long
 
     /**
      * 进入全屏模式
@@ -203,7 +198,4 @@ interface IVideoPlayer {
     interface OnPlayModeListener {
         fun onPlayModeChanged(mode: Int)
     }
-
-
-
 }

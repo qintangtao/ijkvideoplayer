@@ -168,8 +168,13 @@ class XVideoPlayer : FrameLayout
     private var _bufferPercentage = 0
 
     // types
-    private var _displayType = DISPLAY_TYPE_ADAPTER
-    override val displayType get() = _displayType
+    override var displayType: Int = DISPLAY_TYPE_ADAPTER
+        set(value) {
+            if (field != value) {
+                field = value
+                _textureView?.setDisplayType(value)
+            }
+        }
 
     private var mOnPlayModeListener: IVideoPlayer.OnPlayModeListener? = null
     private var _windowMode = WINDOW_MODE_NORMAL
@@ -191,32 +196,86 @@ class XVideoPlayer : FrameLayout
             }
     override val playState get() = _playState
 
-    private var _mediaType = MEDIA_TYPE_IJK
-    override val mediaType get() = _mediaType
+    override var mediaType: Int = MEDIA_TYPE_NATIVE
+
+    override val maxVolume: Int
+        get() = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+
+    override var volume: Int
+        set(value) = audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, value, 0)
+        get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+
+    override val duration: Long
+        get() = _mediaPlayer?.duration ?: 0
+
+    override val currentPosition: Long
+        get() = _mediaPlayer?.currentPosition ?: 0
+
+    override val bufferPercentage: Int
+        get() = _bufferPercentage
+
+    override var speed: Float = 1.0f
+        set(value) {
+            field = value
+            if (mediaPlayer is IjkMediaPlayer) {
+                (mediaPlayer as IjkMediaPlayer).setSpeed(value)
+            }
+        }
+        get() {
+            if (mediaPlayer is IjkMediaPlayer) {
+                return (mediaPlayer as IjkMediaPlayer).getSpeed(field)
+            }
+            return 0f
+        }
+
+    override val networkSpeed: Long
+        get() {
+            if (mediaPlayer is IjkMediaPlayer) {
+                return (mediaPlayer as IjkMediaPlayer).getTcpSpeed()
+            }
+            return 0
+        }
+
+    override val isIdle: Boolean
+        get() = playState == PLAY_STATE_IDLE
+
+    override val isPreparing: Boolean
+        get() = playState == PLAY_STATE_PREPARING
+
+    override val isPrepared: Boolean
+        get() =  playState == PLAY_STATE_PREPARED
+
+    override val isBufferingPlaying: Boolean
+        get() = playState == PLAY_STATE_BUFFERING_PLAYING
+
+    override val isBufferingPaused: Boolean
+        get() = playState == PLAY_STATE_BUFFERING_PAUSED
+
+    override val isPlaying: Boolean
+        get() = playState == PLAY_STATE_PLAYING
+
+    override val isPaused: Boolean
+        get() = playState == PLAY_STATE_PAUSED
+
+    override val isError: Boolean
+        get() = playState == PLAY_STATE_ERROR
+
+    override val isCompleted: Boolean
+        get() = playState == PLAY_STATE_COMPLETED
+
+    override val isFullScreen: Boolean
+        get() = windowMode == WINDOW_MODE_FULLSCREEN
+
+    override val isTinyWindow: Boolean
+        get() = windowMode == WINDOW_MODE_TINY
+
+    override val isNormal: Boolean
+        get() = windowMode == WINDOW_MODE_NORMAL
 
     constructor(context: Context): this(context, null)
     constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
         init(context, attrs)
-    }
-
-    /**
-     *  设置显示类型
-     */
-    fun setDisplayType(type: Int) {
-        if (displayType != type) {
-            _displayType = type
-            _textureView?.setDisplayType(type)
-        }
-    }
-
-    /**
-     * 设置播放器类型
-     *
-     * @param playerType IjkPlayer or MediaPlayer.
-     */
-    fun setMediaType(type: Int) {
-        _mediaType = type
     }
 
     /**
@@ -298,16 +357,6 @@ class XVideoPlayer : FrameLayout
         _mediaPlayer?.seekTo(pos)
     }
 
-    override fun setVolume(volume: Int) {
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
-    }
-
-    override fun setSpeed(speed: Float) {
-        if (mediaPlayer is IjkMediaPlayer) {
-            (mediaPlayer as IjkMediaPlayer).setSpeed(speed)
-        }
-    }
-
     /**
      * 是否从上一次的位置继续播放
      *
@@ -315,71 +364,6 @@ class XVideoPlayer : FrameLayout
      */
     override fun continueFromLastPosition(continueFromLastPosition: Boolean) {
         _continueFromLastPosition = continueFromLastPosition
-    }
-
-    override val isIdle: Boolean
-        get() = playState == PLAY_STATE_IDLE
-
-    override val isPreparing: Boolean
-        get() = playState == PLAY_STATE_PREPARING
-
-    override val isPrepared: Boolean
-        get() =  playState == PLAY_STATE_PREPARED
-
-    override val isBufferingPlaying: Boolean
-        get() = playState == PLAY_STATE_BUFFERING_PLAYING
-
-    override val isBufferingPaused: Boolean
-        get() = playState == PLAY_STATE_BUFFERING_PAUSED
-
-    override val isPlaying: Boolean
-        get() = playState == PLAY_STATE_PLAYING
-
-    override val isPaused: Boolean
-        get() = playState == PLAY_STATE_PAUSED
-
-    override val isError: Boolean
-        get() = playState == PLAY_STATE_ERROR
-
-    override val isCompleted: Boolean
-        get() = playState == PLAY_STATE_COMPLETED
-
-    override val isFullScreen: Boolean
-        get() = windowMode == WINDOW_MODE_FULLSCREEN
-
-    override val isTinyWindow: Boolean
-        get() = windowMode == WINDOW_MODE_TINY
-
-    override val isNormal: Boolean
-        get() = windowMode == WINDOW_MODE_NORMAL
-
-    override val maxVolume: Int
-        get() = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-
-    override val volume: Int
-        get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-
-    override val duration: Long
-        get() = _mediaPlayer?.duration ?: 0
-
-    override val currentPosition: Long
-        get() = _mediaPlayer?.currentPosition ?: 0
-
-    override val bufferPercentage: Int
-        get() = _bufferPercentage
-
-    override fun getSpeed(speed: Float): Float {
-        if (mediaPlayer is IjkMediaPlayer) {
-            return (mediaPlayer as IjkMediaPlayer).getSpeed(speed)
-        }
-        return 0f
-    }
-
-    override fun getTcpSpeed(): Long {
-        if (mediaPlayer is IjkMediaPlayer) {
-            return (mediaPlayer as IjkMediaPlayer).getTcpSpeed()
-        }
-        return 0
     }
 
     override fun enterFullScreen() {

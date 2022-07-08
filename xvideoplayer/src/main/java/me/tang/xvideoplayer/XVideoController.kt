@@ -231,7 +231,7 @@ abstract class XVideoController : FrameLayout, View.OnTouchListener,
                     val deltaVolume = (maxVolume * deltaY * 3 / height).toInt()
                     var newVolume: Int = _gestureDownVolume + deltaVolume
                     newVolume = Math.max(0, Math.min(maxVolume, newVolume))
-                    videoPlayer.setVolume(newVolume)
+                    videoPlayer.volume = newVolume
                     val newVolumeProgress = (100f * newVolume / maxVolume).toInt()
                     showChangeVolume(newVolumeProgress)
                 }

@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.xVideoPlayer.run {
-            setMediaType(XVideoPlayer.MEDIA_TYPE_NATIVE)
+            mediaType = XVideoPlayer.MEDIA_TYPE_NATIVE
             setVideoController(controller)
             //setUp("rtsp://wowzaec2demo.streamlock.net/vod/mp4", null)
             //setUp("rtsp://admin:br123456789@192.168.1.39:554/avstream", null)
@@ -40,22 +40,22 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.btnMediaAndroid.setOnClickListener {
-            binding.xVideoPlayer.setMediaType(XVideoPlayer.MEDIA_TYPE_NATIVE)
+            binding.xVideoPlayer.mediaType = XVideoPlayer.MEDIA_TYPE_NATIVE
         }
         binding.btnMediaFFmpeg.setOnClickListener {
-            binding.xVideoPlayer.setMediaType(XVideoPlayer.MEDIA_TYPE_IJK)
+            binding.xVideoPlayer.mediaType = XVideoPlayer.MEDIA_TYPE_IJK
         }
         binding.btnFillParent.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_FILL_PARENT)
+            binding.xVideoPlayer.displayType = XVideoPlayer.DISPLAY_TYPE_FILL_PARENT
         }
         binding.btnFillCrop.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_FILL_SCROP)
+            binding.xVideoPlayer.displayType = XVideoPlayer.DISPLAY_TYPE_FILL_SCROP
         }
         binding.btnOriginal.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_ORIGINAL)
+            binding.xVideoPlayer.displayType = XVideoPlayer.DISPLAY_TYPE_ORIGINAL
         }
         binding.btnAdapter.setOnClickListener {
-            binding.xVideoPlayer.setDisplayType(XVideoPlayer.DISPLAY_TYPE_ADAPTER)
+            binding.xVideoPlayer.displayType = XVideoPlayer.DISPLAY_TYPE_ADAPTER
         }
     }
 
