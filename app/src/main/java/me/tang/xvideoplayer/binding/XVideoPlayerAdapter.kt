@@ -13,17 +13,19 @@ object XVideoPlayerAdapter {
     @JvmStatic
     @BindingAdapter(value = ["title", "length", "imageUrl", "videoUrl"], requireAll = false)
     fun setVideo(videoPlayer: XVideoPlayer, title: String?, length: Int, imageUrl: String?, videoUrl: String?) {
-        XLog.d("title:$title, length:$length, imageUrl:$imageUrl, videoUrl:$videoUrl")
-        val controller = TXVideoController(videoPlayer.context)
+        //XLog.d("title:$title, length:$length, imageUrl:$imageUrl, videoUrl:$videoUrl")
+        val controller = videoPlayer.videoController ?: TXVideoController(videoPlayer.context)
         title?.let {
             controller.setTitle(it)
         }
         controller.setLenght(length.toLong())
         imageUrl?.let {
-            Glide.with(controller)
-                .load(it)
-                .placeholder(R.drawable.img_default)
-                .into(controller.imageView())
+            controller.imageView()?.let { it1 ->
+                Glide.with(controller)
+                    .load(it)
+                    .placeholder(R.drawable.img_default)
+                    .into(it1)
+            }
         }
         videoUrl?.let {
             videoPlayer.setUp(videoUrl, null)

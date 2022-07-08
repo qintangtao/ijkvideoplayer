@@ -140,7 +140,7 @@ class XVideoPlayer : FrameLayout
     private val textureView get() = _textureView!!
 
     private var _videoController: XVideoController? = null
-    private val videoController get() = _videoController!!
+    val videoController get() = _videoController
 
     // video and audio
     private var _mediaPlayer: IMediaPlayer? = null
@@ -474,6 +474,8 @@ class XVideoPlayer : FrameLayout
     }
 
     override fun release() {
+        XLog.d("release -> playState:${playState}, windowMode:${windowMode}")
+
         // 保存播放位置
         if (isPlaying || isBufferingPlaying || isPaused || isBufferingPaused)
             XUtil.savePlayPosition(context, url, currentPosition)
