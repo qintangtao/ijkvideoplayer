@@ -329,13 +329,16 @@ class TXVideoController : XVideoController
     }
 
     override  fun onClarityChanged(clarityIndex: Int) {
+        XLog.d("onClarityChanged -> clarityIndex:$clarityIndex")
         // 根据切换后的清晰度索引值，设置对应的视频链接地址，并从当前播放位置接着播放
         val clarity = clarities.get(clarityIndex)
         binding.clarity.setText(clarity.grade)
+
+        val currentPosition = videoPlayer.currentPosition
         videoPlayer.run {
             releasePlayer()
             setUp(clarity.url, null)
-            start(videoPlayer.currentPosition)
+            start(currentPosition)
         }
     }
 

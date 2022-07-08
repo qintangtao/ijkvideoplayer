@@ -34,7 +34,7 @@ android {
 
 dependencies {
 
-    api rootProject.ext.dependencies["utilcodex"]
+    //api rootProject.ext.dependencies["utilcodex"]
     api rootProject.ext.dependencies.coroutines
 
     //# required, enough for most devices.

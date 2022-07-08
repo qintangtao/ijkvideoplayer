@@ -9,8 +9,6 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
-import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.SizeUtils
 import tv.danmaku.ijk.media.player.AndroidMediaPlayer
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
@@ -239,16 +237,19 @@ class XVideoPlayer : FrameLayout
     }
 
     override fun setUp(url: String, headers: Map<String, String>?) {
+        XLog.d("setUp -> url:$url, headers:$headers")
         _url = url
         _headers = headers
     }
 
     override fun start() {
-        if (_textureView == null) {
+        if (playState == PLAY_STATE_IDLE) {
             initAudioManager()
             initMediaPlayer()
             initTextureView()
             addTextureView()
+        } else {
+            XLog.d("start -> playState:$playState 只有在PLAYER_STATE_IDLE时才能调用")
         }
     }
 
@@ -435,11 +436,11 @@ class XVideoPlayer : FrameLayout
         check(contentView != null) { "ID_ANDROID_CONTENT not found" }
 
         val params = FrameLayout.LayoutParams(
-            (ScreenUtils.getScreenWidth() * 0.5f).toInt(),
-            (ScreenUtils.getScreenWidth() * 0.5f * 9f / 16f).toInt()).apply {
+            (XUtil.getScreenWidth(context) * 0.5f).toInt(),
+            (XUtil.getScreenWidth(context) * 0.5f * 9f / 16f).toInt()).apply {
                 gravity = Gravity.BOTTOM or Gravity.END
-            rightMargin = SizeUtils.dp2px(14f)
-            bottomMargin = SizeUtils.dp2px(14f)
+            rightMargin = XUtil.dp2px(14f)
+            bottomMargin = XUtil.dp2px(14f)
         }
         contentView.addView(container, params)
 
@@ -546,6 +547,7 @@ class XVideoPlayer : FrameLayout
 
         mp.start()
 
+        // 从上次的保存位置播放
         if (_continueFromLastPosition) {
             val position = XUtil.getSavedPlayPosition(context, url)
             if (position > 0)

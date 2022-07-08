@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Resources
+import android.graphics.Point
 import android.os.Build
 import android.view.ContextThemeWrapper
 import android.view.WindowInsets
@@ -127,5 +129,37 @@ object XUtil {
     fun getSavedPlayPosition(context: Context, url: String): Long {
         return context.getSharedPreferences("X_VIDEO_PALYER_PLAY_POSITION", Context.MODE_PRIVATE)
             .getLong(url, 0)
+    }
+
+    fun dp2px(dpValue: Float): Int {
+        val scale = Resources.getSystem().displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
+    }
+
+    fun getScreenWidth(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val point = Point()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            wm.defaultDisplay.getRealSize(point)
+        } else {
+            wm.defaultDisplay.getSize(point)
+        }
+        return point.x
+    }
+
+    /**
+     * Return the height of screen, in pixel.
+     *
+     * @return the height of screen, in pixel
+     */
+    fun getScreenHeight(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val point = Point()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            wm.defaultDisplay.getRealSize(point)
+        } else {
+            wm.defaultDisplay.getSize(point)
+        }
+        return point.y
     }
 }

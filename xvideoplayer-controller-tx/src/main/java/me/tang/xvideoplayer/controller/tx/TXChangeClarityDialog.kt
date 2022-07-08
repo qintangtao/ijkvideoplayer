@@ -6,8 +6,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.SizeUtils
 import me.tang.xvideoplayer.XUtil
 import me.tang.xvideoplayer.controller.tx.databinding.ItemChangeClarityBinding
 
@@ -51,7 +49,7 @@ class TXChangeClarityDialog : Dialog {
             }
 
             val params = binding.itemView.layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = if (i == 0) 0 else SizeUtils.dp2px(16f)
+            params.topMargin = if (i == 0) 0 else XUtil.dp2px(16f)
             linearLayout.addView(binding.root, params)
         }
     }
@@ -81,8 +79,8 @@ class TXChangeClarityDialog : Dialog {
 
         val windowParams = window?.attributes
         windowParams?.run {
-            width = ScreenUtils.getScreenHeight()
-            height = ScreenUtils.getScreenWidth()
+            width = XUtil.getScreenHeight(this@TXChangeClarityDialog.context)
+            height = XUtil.getScreenWidth(this@TXChangeClarityDialog.context)
         }
         window?.attributes = windowParams
     }
