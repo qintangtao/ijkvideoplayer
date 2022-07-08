@@ -9,7 +9,7 @@ interface IVideoPlayer {
     var displayType: Int
 
     /**
-     * 播放引擎
+     * 播放引擎（android or ffmpeg）
      */
     var mediaType: Int
 

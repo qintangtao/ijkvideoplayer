@@ -2,6 +2,7 @@ package me.tang.xvideoplayer
 
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.SurfaceTexture
 import android.media.AudioManager
@@ -231,7 +232,7 @@ class XVideoPlayer : FrameLayout
     override val networkSpeed: Long
         get() {
             if (mediaPlayer is IjkMediaPlayer) {
-                return (mediaPlayer as IjkMediaPlayer).getTcpSpeed()
+                return (mediaPlayer as IjkMediaPlayer).tcpSpeed
             }
             return 0
         }
@@ -686,6 +687,7 @@ class XVideoPlayer : FrameLayout
             _playState = PLAY_STATE_PREPARING
             XLog.d( "openMediaPlayer -> STATE_PREPARING")
         } catch (e: IOException) {
+            _playState = PLAY_STATE_ERROR
             e.printStackTrace()
             XLog.e( "openMediaPlayer", e)
         }

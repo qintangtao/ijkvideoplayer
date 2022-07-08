@@ -1,11 +1,13 @@
 package me.tang.xvideoplayer
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import me.tang.xvideoplayer.controller.tx.R
 import me.tang.xvideoplayer.controller.tx.TXVideoController
 import me.tang.xvideoplayer.databinding.ActivityMainBinding
+import me.tang.xvideoplayer.ui.RecyclerViewActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -38,7 +40,6 @@ class MainActivity : AppCompatActivity() {
             //setUp("/data/local/tmp/v1080.mp4", null)
         }
 
-
         binding.btnMediaAndroid.setOnClickListener {
             binding.xVideoPlayer.mediaType = XVideoPlayer.MEDIA_TYPE_NATIVE
         }
@@ -57,6 +58,21 @@ class MainActivity : AppCompatActivity() {
         binding.btnAdapter.setOnClickListener {
             binding.xVideoPlayer.displayType = XVideoPlayer.DISPLAY_TYPE_ADAPTER
         }
+        binding.btnRecycler.setOnClickListener {
+            startActivity(Intent(this, RecyclerViewActivity::class.java))
+        }
+    }
+
+    override fun onRestart() {
+        XLog.d("onRestart -> playState: ${binding.xVideoPlayer.playState}")
+        super.onRestart()
+        binding.xVideoPlayer.restart()
+    }
+
+    override fun onStop() {
+        XLog.d("onStop -> playState: ${binding.xVideoPlayer.playState}")
+        binding.xVideoPlayer.pause()
+        super.onStop()
     }
 
     override fun onBackPressed() {

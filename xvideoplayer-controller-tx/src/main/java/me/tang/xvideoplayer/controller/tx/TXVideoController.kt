@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.TypedArray
 import android.os.BatteryManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -46,7 +47,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
         attrs,
         defStyleAttr
     ) {
-        init(context)
+        init(context, attrs)
     }
 
     fun setClarity(clarities: List<XClarity>, defaultIndex: Int) {
@@ -341,7 +342,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
         setTopBottomVisible(true)
     }
 
-    private fun init(context: Context) {
+    private fun init(context: Context, attrs: AttributeSet?) {
         binding = TxVideoPlayerControllerBinding.inflate(LayoutInflater.from(context), this, true)
         binding.centerStart.setOnClickListener(this)
         binding.back.setOnClickListener(this)

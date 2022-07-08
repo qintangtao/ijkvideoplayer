@@ -1,0 +1,33 @@
+package me.tang.xvideoplayer.binding
+
+import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
+import me.tang.xvideoplayer.XLog
+import me.tang.xvideoplayer.XVideoPlayer
+import me.tang.xvideoplayer.controller.tx.R
+import me.tang.xvideoplayer.controller.tx.TXVideoController
+
+object XVideoPlayerAdapter {
+
+    @JvmStatic
+    @BindingAdapter(value = ["title", "length", "imageUrl", "videoUrl"], requireAll = false)
+    fun setVideo(videoPlayer: XVideoPlayer, title: String?, length: Int, imageUrl: String?, videoUrl: String?) {
+        XLog.d("title:$title, length:$length, imageUrl:$imageUrl, videoUrl:$videoUrl")
+        val controller = TXVideoController(videoPlayer.context)
+        title?.let {
+            controller.setTitle(it)
+        }
+        controller.setLenght(length.toLong())
+        imageUrl?.let {
+            Glide.with(controller)
+                .load(it)
+                .placeholder(R.drawable.img_default)
+                .into(controller.imageView())
+        }
+        videoUrl?.let {
+            videoPlayer.setUp(videoUrl, null)
+        }
+        videoPlayer.setVideoController(controller)
+    }
+
+}
