@@ -22,61 +22,58 @@ import me.tang.xvideoplayer.controller.tx.databinding.TxVideoPlayerControllerBin
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TXVideoController : XVideoController
-    , View.OnClickListener
-    , SeekBar.OnSeekBarChangeListener
-    , TXChangeClarityDialog.OnClarityChangedListener {
+class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeekBarChangeListener,
+    TXChangeClarityDialog.OnClarityChangedListener {
 
     private lateinit var binding: TxVideoPlayerControllerBinding
 
-    private var _topBottomVisible = false
-
     // 是否已经注册了电池广播
-    private var _hasRegisterBatteryReceiver = false
+    private var hasRegisterBatteryReceiver = false
 
-    private var _dismissTopBottomJob: Job? = null
+    // 顶部和底部定时隐藏
+    private var dismissTopBottomJob: Job? = null
+    private var topBottomVisible = false
 
     // 视频链接地址
-    private var _clarities: List<XClarity>? = null
-    private val clarities get() = _clarities!!
+    private var clarities: List<XClarity>? = null
+    private var defaultClaritieIndex = 0
+    private val clarityDialog by lazy { TXChangeClarityDialog(this.context) }
 
-    private var _defaultClaritieIndex = 0
-
-    private val _clarityDialog by lazy { TXChangeClarityDialog(this.context) }
-
-    constructor(context: Context): this(context, null)
-    constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(context)
     }
 
-    fun setClarity(clarities: List<XClarity>, defaultClarityIndex: Int) {
+    fun setClarity(clarities: List<XClarity>, defaultIndex: Int) {
         if (clarities.isEmpty()) return
 
-        _clarities = clarities
-        _defaultClaritieIndex = defaultClarityIndex
+        this.clarities = clarities
+        this.defaultClaritieIndex = defaultIndex
 
-        val clarityGrades = ArrayList<String>()
+        val grades = ArrayList<String>()
         clarities.forEach {
-            clarityGrades.add("${it.grade} ${it.p}")
+            grades.add("${it.grade} ${it.p}")
         }
 
-        binding.clarity.text = clarities.get(_defaultClaritieIndex).grade
+        binding.clarity.text = clarities[defaultClaritieIndex].grade
 
         // 初始化切换清晰度对话框
-        _clarityDialog.setClarityGrade(clarityGrades, defaultClarityIndex)
-        _clarityDialog.setOnClarityChangedListener(this)
+        clarityDialog.setClarityGrade(grades, defaultClaritieIndex)
+        clarityDialog.setOnClarityChangedListener(this)
 
         // 给播放器配置视频链接地址
-        _videoPlayer?.let {
-            it.setUp(clarities.get(_defaultClaritieIndex).url, null)
-        }
+        _videoPlayer?.setUp(clarities.get(defaultClaritieIndex).url, null)
     }
 
     override fun setVideoPlayer(videoPlayer: IVideoPlayer) {
         super.setVideoPlayer(videoPlayer)
-        if (_clarities?.size ?: 0 > 1) {
-            videoPlayer.setUp(clarities.get(_defaultClaritieIndex).url, null)
+        if ((clarities?.size ?: 0) > 1) {
+            clarities?.get(defaultClaritieIndex)?.let { videoPlayer.setUp(it.url, null) }
         }
     }
 
@@ -88,14 +85,14 @@ class TXVideoController : XVideoController
         binding.image.setImageResource(resId)
     }
 
-    override fun imageView(): ImageView? = binding.image
+    override fun imageView(): ImageView = binding.image
 
     override fun setLenght(length: Long) {
         binding.length.text = XUtil.formatTime(length)
     }
 
     override fun reset() {
-        _topBottomVisible = false
+        topBottomVisible = false
 
         cancelUpdateProgressTimer()
         cancelDismissTopBottomTimer()
@@ -121,7 +118,7 @@ class TXVideoController : XVideoController
         val totalDuration = videoPlayer.duration
         val progress = (100f * currentDuration / totalDuration).toInt()
         binding.run {
-            seek.setProgress(progress)
+            seek.progress = progress
             seek.secondaryProgress = videoPlayer.bufferPercentage
             position.text = XUtil.formatTime(currentDuration)
             duration.text = XUtil.formatTime(totalDuration)
@@ -167,7 +164,7 @@ class TXVideoController : XVideoController
     }
 
     override fun onClick(v: View?) {
-        when(v) {
+        when (v) {
             binding.centerStart -> {
                 if (videoPlayer.isIdle)
                     videoPlayer.start()
@@ -193,7 +190,7 @@ class TXVideoController : XVideoController
             }
             binding.clarity -> {
                 setTopBottomVisible(false)
-                _clarityDialog.show()
+                clarityDialog.show()
             }
             binding.retry -> videoPlayer.restart()
             binding.replay -> binding.retry.performClick()
@@ -201,8 +198,9 @@ class TXVideoController : XVideoController
                 if (videoPlayer.isPlaying
                     || videoPlayer.isPaused
                     || videoPlayer.isBufferingPlaying
-                    || videoPlayer.isBufferingPaused ){
-                    setTopBottomVisible(!_topBottomVisible)
+                    || videoPlayer.isBufferingPaused
+                ) {
+                    setTopBottomVisible(!topBottomVisible)
                 }
             }
         }
@@ -210,8 +208,11 @@ class TXVideoController : XVideoController
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
     }
+
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        setTopBottomVisible(true)
     }
+
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         if (videoPlayer.isBufferingPaused || videoPlayer.isPaused)
             videoPlayer.restart()
@@ -232,7 +233,7 @@ class TXVideoController : XVideoController
                     bottom.visibility = View.GONE
                     centerStart.visibility = View.GONE
                     length.visibility = View.GONE
-                    loadText.text = "正在准备..."
+                    loadText.text = context.getString(R.string.preparring)
                 }
             }
             XVideoPlayer.PLAY_STATE_PREPARED -> {
@@ -257,7 +258,7 @@ class TXVideoController : XVideoController
                 binding.run {
                     loading.visibility = View.VISIBLE
                     restartOrPause.setImageResource(R.drawable.ic_player_pause)
-                    loadText.text = "正在缓冲..."
+                    loadText.text = context.getString(R.string.buffering)
                 }
             }
             XVideoPlayer.PLAY_STATE_BUFFERING_PAUSED -> {
@@ -265,7 +266,7 @@ class TXVideoController : XVideoController
                 binding.run {
                     loading.visibility = View.VISIBLE
                     restartOrPause.setImageResource(R.drawable.ic_player_start)
-                    loadText.text = "正在缓冲..."
+                    loadText.text = context.getString(R.string.buffering)
                 }
             }
             XVideoPlayer.PLAY_STATE_ERROR -> {
@@ -297,10 +298,7 @@ class TXVideoController : XVideoController
                     clarity.visibility = View.GONE
                     batteryTime.visibility = View.GONE
                 }
-                if (_hasRegisterBatteryReceiver) {
-                    this.context.unregisterReceiver(_batterReceiver)
-                    _hasRegisterBatteryReceiver = false
-                }
+                unregisterBatteryReceiver()
             }
             XVideoPlayer.WINDOW_MODE_FULLSCREEN -> {
                 binding.run {
@@ -308,16 +306,12 @@ class TXVideoController : XVideoController
                     fullScreen.visibility = View.GONE
                     fullScreen.setImageResource(R.drawable.ic_player_shrink)
                     batteryTime.visibility = View.VISIBLE
-                    _clarities?.let {
+                    clarities?.let {
                         if (it.size > 1)
                             clarity.visibility = View.VISIBLE
                     }
                 }
-                if (!_hasRegisterBatteryReceiver) {
-                    this.context.registerReceiver(_batterReceiver,
-                        IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-                    _hasRegisterBatteryReceiver = true
-                }
+                registerBatteryReceiver()
             }
             XVideoPlayer.WINDOW_MODE_TINY -> {
                 binding.run {
@@ -328,11 +322,11 @@ class TXVideoController : XVideoController
         }
     }
 
-    override  fun onClarityChanged(clarityIndex: Int) {
-        XLog.d("onClarityChanged -> clarityIndex:$clarityIndex")
+    override fun onClarityChanged(index: Int) {
+        XLog.d("onClarityChanged -> clarityIndex:$index")
         // 根据切换后的清晰度索引值，设置对应的视频链接地址，并从当前播放位置接着播放
-        val clarity = clarities.get(clarityIndex)
-        binding.clarity.setText(clarity.grade)
+        val clarity = clarities?.get(index) ?: return
+        binding.clarity.text = clarity.grade
 
         val currentPosition = videoPlayer.currentPosition
         videoPlayer.run {
@@ -346,7 +340,6 @@ class TXVideoController : XVideoController
         // 清晰度没有变化，对话框消失后，需要重新显示出top、bottom
         setTopBottomVisible(true)
     }
-
 
     private fun init(context: Context) {
         binding = TxVideoPlayerControllerBinding.inflate(LayoutInflater.from(context), this, true)
@@ -367,7 +360,7 @@ class TXVideoController : XVideoController
             top.visibility = if (visible) View.VISIBLE else View.GONE
             bottom.visibility = top.visibility
         }
-        _topBottomVisible = visible
+        topBottomVisible = visible
         if (visible) {
             if (!videoPlayer.isPaused && !videoPlayer.isBufferingPaused)
                 startDismissTopBottomTimer()
@@ -381,29 +374,45 @@ class TXVideoController : XVideoController
      */
     private fun startDismissTopBottomTimer() {
         cancelDismissTopBottomTimer()
-        _dismissTopBottomJob = flow<Int> {
-            delay(3000)
+        dismissTopBottomJob = flow {
+            delay(6000)
             emit(1)
         }.flowOn(Dispatchers.IO)
-        .onEach {
-            setTopBottomVisible(false)
-        }.launchIn(mainScope)
+            .onEach { setTopBottomVisible(false) }
+            .launchIn(mainScope)
     }
 
     /**
      * 取消top、bottom自动消失的timer
      */
     private fun cancelDismissTopBottomTimer() {
-        _dismissTopBottomJob?.cancel()
-        _dismissTopBottomJob = null
+        dismissTopBottomJob?.cancel()
+        dismissTopBottomJob = null
     }
 
     /**
      * 电池状态即电量变化广播接收器
      */
-    private val _batterReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val status = intent?.getIntExtra(
+    private fun registerBatteryReceiver() {
+        if (!hasRegisterBatteryReceiver) {
+            context.registerReceiver(
+                batterReceiver,
+                IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            )
+            hasRegisterBatteryReceiver = true
+        }
+    }
+
+    private fun unregisterBatteryReceiver() {
+        if (hasRegisterBatteryReceiver) {
+            context.unregisterReceiver(batterReceiver)
+            hasRegisterBatteryReceiver = false
+        }
+    }
+
+    private val batterReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val status = intent.getIntExtra(
                 BatteryManager.EXTRA_STATUS,
                 BatteryManager.BATTERY_STATUS_UNKNOWN
             )
@@ -413,8 +422,8 @@ class TXVideoController : XVideoController
                 BatteryManager.BATTERY_STATUS_FULL -> // 充电完成
                     binding.battery.setImageResource(R.drawable.battery_full)
                 else -> {
-                    val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) ?: 0
-                    val scale = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, 0) ?: 0
+                    val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+                    val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 0)
                     val percentage = (level.toFloat() / scale * 100).toInt()
                     if (percentage <= 10) {
                         binding.battery.setImageResource(R.drawable.battery_10)

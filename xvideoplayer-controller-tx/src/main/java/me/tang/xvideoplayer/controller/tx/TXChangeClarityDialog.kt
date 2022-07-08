@@ -9,33 +9,39 @@ import android.widget.LinearLayout
 import me.tang.xvideoplayer.XUtil
 import me.tang.xvideoplayer.controller.tx.databinding.ItemChangeClarityBinding
 
-class TXChangeClarityDialog : Dialog {
+class TXChangeClarityDialog(context: Context) : Dialog(context) {
 
     private lateinit var linearLayout: LinearLayout
+
     private var currentIndex = 0
 
-    private var _listener: OnClarityChangedListener? = null
+    private var listener: OnClarityChangedListener? = null
 
-    constructor(context: Context): super(context) {
+    init {
         init(context)
     }
 
     fun setOnClarityChangedListener(listener: OnClarityChangedListener) {
-        _listener = listener
+        this.listener = listener
     }
 
-    fun setClarityGrade(items: List<String>, defaultChecked: Int) {
-        currentIndex = defaultChecked
+    fun setClarityGrade(items: List<String>, defaultIndex: Int) {
+        currentIndex = defaultIndex
         val inflater = LayoutInflater.from(context)
         for (i in items.indices) {
             val binding = ItemChangeClarityBinding.inflate(inflater, linearLayout, false)
-            binding.itemView.run {
-                setTag(i)
-                setOnClickListener {
-                    val checkIndex: Int = it?.tag as? Int ?: 0
-                    _listener?.let {
+            binding.root.run {
+                tag = i
+                text = items.get(i)
+                isSelected = i == currentIndex
+                setOnClickListener { view ->
+                    val checkIndex = view.tag as Int
+                    listener?.let {
                         if (checkIndex != currentIndex) {
-
+                            //val childCount = linearLayout.childCount - 1
+                            //for (j in 0..childCount) {
+                            //    linearLayout.getChildAt(j).isSelected = checkIndex == j
+                            //}
                             it.onClarityChanged(checkIndex)
                             currentIndex = checkIndex
                         } else {
@@ -44,30 +50,26 @@ class TXChangeClarityDialog : Dialog {
                     }
                     this@TXChangeClarityDialog.dismiss()
                 }
-                setText(items.get(i))
-                isSelected = i == defaultChecked
             }
 
-            val params = binding.itemView.layoutParams as ViewGroup.MarginLayoutParams
+            val params = binding.root.layoutParams as ViewGroup.MarginLayoutParams
             params.topMargin = if (i == 0) 0 else XUtil.dp2px(16f)
             linearLayout.addView(binding.root, params)
         }
     }
 
-
     override fun onBackPressed() {
         // 按返回键时回调清晰度没有变化
-        _listener?.onClarityNotChanged()
+        listener?.onClarityNotChanged()
         super.onBackPressed()
     }
-
 
     private fun init(context: Context) {
         linearLayout = LinearLayout(context).apply {
             gravity = Gravity.CENTER
             orientation = LinearLayout.VERTICAL
             setOnClickListener {
-                _listener?.onClarityNotChanged()
+                listener?.onClarityNotChanged()
                 this@TXChangeClarityDialog.dismiss()
             }
         }

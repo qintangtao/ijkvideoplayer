@@ -43,6 +43,9 @@ dependencies {
     implementation project(path: ':xvideoplayer-controller-tx')
 
     implementation rootProject.ext.dependencies.glide
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     kapt  rootProject.ext.dependencies['glide-compiler']
 
     //# required, enough for most devices.

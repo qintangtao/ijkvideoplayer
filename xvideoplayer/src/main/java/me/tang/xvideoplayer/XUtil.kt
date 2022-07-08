@@ -26,9 +26,9 @@ object XUtil {
 
     private fun getAppCompActivity(context: Context): AppCompatActivity? {
         if (context is AppCompatActivity) {
-            return context as AppCompatActivity
+            return context
         } else if (context is ContextThemeWrapper) {
-            return getAppCompActivity((context as ContextThemeWrapper).getBaseContext())
+            return getAppCompActivity(context.baseContext)
         }
         return null
     }
@@ -42,7 +42,7 @@ object XUtil {
     }
 
     fun screenBrightness(context: Context, brightness: Float) {
-        val window = XUtil.scanForActivity(context)?.window
+        val window = scanForActivity(context)?.window
         window?.let {
             val params = it.attributes
             params?.screenBrightness = brightness
@@ -53,8 +53,7 @@ object XUtil {
 
     @SuppressLint("RestrictedApi")
     fun showActionBar(context: Context) {
-        val ab: ActionBar? =
-            getAppCompActivity(context)?.getSupportActionBar()
+        val ab = getAppCompActivity(context)?.supportActionBar
         ab?.run {
             setShowHideAnimationEnabled(false)
             show()
@@ -69,8 +68,7 @@ object XUtil {
 
     @SuppressLint("RestrictedApi")
     fun hideActionBar(context: Context) {
-        val ab: ActionBar? =
-            getAppCompActivity(context)?.getSupportActionBar()
+        val ab = getAppCompActivity(context)?.supportActionBar
         ab?.run {
             setShowHideAnimationEnabled(false)
             hide()
@@ -81,28 +79,29 @@ object XUtil {
             else
                 setFlags(
                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+                )
         }
     }
 
-    fun formatTime(milliseconds: Long) : String {
+    fun formatTime(milliseconds: Long): String {
         var mins: Int
         var secs: Int = (milliseconds / 1000).toInt()
         val us: Int = (milliseconds % 1000).toInt()
-        mins  = secs / 60
+        mins = secs / 60
         secs %= 60
         val hours = mins / 60
         mins %= 60
-        val msecs = (100 * us) / 1000
+        //val msecs = (100 * us) / 1000
 
         val _mins = String.format("%02d", mins)
         val _secs = String.format("%02d", secs)
         //val _msecs = String.format("%02d", msecs)
         if (hours > 0) {
             val _hours = String.format("%02d", hours)
-            return  "$_hours:$_mins:$_secs" //.$_msecs
+            return "$_hours:$_mins:$_secs" //.$_msecs
         } else {
-            return  "$_mins:$_secs"
+            return "$_mins:$_secs"
         }
     }
 
@@ -137,6 +136,8 @@ object XUtil {
     }
 
     fun getScreenWidth(context: Context): Int {
+        return context.resources.displayMetrics.widthPixels
+        /*
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val point = Point()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -144,7 +145,7 @@ object XUtil {
         } else {
             wm.defaultDisplay.getSize(point)
         }
-        return point.x
+        return point.x*/
     }
 
     /**
@@ -153,6 +154,8 @@ object XUtil {
      * @return the height of screen, in pixel
      */
     fun getScreenHeight(context: Context): Int {
+        return context.resources.displayMetrics.heightPixels
+        /*
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val point = Point()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -160,6 +163,6 @@ object XUtil {
         } else {
             wm.defaultDisplay.getSize(point)
         }
-        return point.y
+        return point.y*/
     }
 }

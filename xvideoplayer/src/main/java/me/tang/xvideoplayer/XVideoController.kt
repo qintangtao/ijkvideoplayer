@@ -16,14 +16,14 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-abstract class XVideoController : FrameLayout
-    , View.OnTouchListener
-    , IVideoPlayer.OnPlayStateListener
-    , IVideoPlayer.OnPlayModeListener {
+abstract class XVideoController : FrameLayout, View.OnTouchListener,
+    IVideoPlayer.OnPlayStateListener, IVideoPlayer.OnPlayModeListener {
+
+    companion object {
+        const val THRESHOLD = 80
+    }
 
     protected val mainScope = MainScope()
-
-    private val THRESHOLD = 80
 
     private var _updateProgressJob: Job? = null
 
@@ -43,9 +43,13 @@ abstract class XVideoController : FrameLayout
 
     private var _newPosition: Long = 0
 
-    constructor(context: Context): this(context, null)
-    constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         this.setOnTouchListener(this)
     }
 
@@ -56,17 +60,15 @@ abstract class XVideoController : FrameLayout
     }
 
     fun startUpdateProgressTimer() {
-        if (_updateProgressJob != null)
-            return
-
+        cancelUpdateProgressTimer()
         _updateProgressJob = flow {
             while (true) {
                 emit(1)
                 delay(1000)
             }
         }.flowOn(Dispatchers.IO)
-        .onEach { updateProgress() }
-        .launchIn(mainScope)
+            .onEach { updateProgress() }
+            .launchIn(mainScope)
     }
 
     fun cancelUpdateProgressTimer() {
@@ -160,10 +162,11 @@ abstract class XVideoController : FrameLayout
 
         // 只有在播放、暂停、缓冲的时候能够拖动改变位置、亮度和声音
         if (videoPlayer.isIdle
-                || videoPlayer.isError
-                || videoPlayer.isPreparing
-                || videoPlayer.isPrepared
-                || videoPlayer.isCompleted) {
+            || videoPlayer.isError
+            || videoPlayer.isPreparing
+            || videoPlayer.isPrepared
+            || videoPlayer.isCompleted
+        ) {
             hideChangePosition()
             hideChangeBrightness()
             hideChangeVolume()
@@ -172,7 +175,7 @@ abstract class XVideoController : FrameLayout
 
         val x = event.x
         val y = event.y
-        when(event.action) {
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 _downX = x
                 _downY = y

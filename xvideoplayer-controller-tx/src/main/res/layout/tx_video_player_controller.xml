@@ -37,9 +37,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="正在缓冲..."
             android:textColor="@android:color/white"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            tools:text="@string/buffering"/>
     </LinearLayout>
 
     <!--改变播放位置-->
@@ -157,7 +157,7 @@
             android:drawableLeft="@drawable/ic_player_replay"
             android:drawablePadding="4dp"
             android:padding="8dp"
-            android:text="重新播放"
+            android:text="@string/replay"
             android:textColor="@android:color/white"
             android:textSize="13sp"/>
 
@@ -169,7 +169,7 @@
             android:drawableLeft="@drawable/ic_palyer_share"
             android:drawablePadding="4dp"
             android:padding="8dp"
-            android:text="分享"
+            android:text="@string/share"
             android:textColor="@android:color/white"
             android:textSize="13sp"/>
     </LinearLayout>
@@ -187,7 +187,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="播放错误，请重试。"
+            android:text="@string/play_error_retry"
             android:textColor="@android:color/white"
             android:textSize="13sp"/>
 
@@ -201,7 +201,7 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:paddingTop="4dp"
-            android:text="点击重试"
+            android:text="@string/click_retry"
             android:textColor="@android:color/white"
             android:textSize="13sp"/>
     </LinearLayout>

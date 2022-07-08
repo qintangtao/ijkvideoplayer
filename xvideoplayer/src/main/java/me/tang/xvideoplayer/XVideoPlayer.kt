@@ -276,7 +276,7 @@ class XVideoPlayer : FrameLayout
                 openMediaPlayer()
             }
             else -> {
-                XLog.d("NiceVideoPlayer在mCurrentState == " + playState + "时不能调用restart()方法.");
+                XLog.d("在 playState == $playState 时不能调用restart方法.");
             }
         }
     }
@@ -647,20 +647,16 @@ class XVideoPlayer : FrameLayout
 
     private fun initAudioManager() {
         _audioManager ?: context.getSystemService(Context.AUDIO_SERVICE).also {
-            _audioManager = it as AudioManager?
-            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+            _audioManager = it as? AudioManager
+            _audioManager?.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         }
     }
 
     private fun initMediaPlayer() {
         if (_mediaPlayer == null) {
-            when(mediaType) {
-                MEDIA_TYPE_NATIVE -> {
-                    _mediaPlayer = AndroidMediaPlayer()
-                }
-                else -> {
-                    _mediaPlayer = IjkMediaPlayer()
-                }
+            _mediaPlayer = when(mediaType) {
+                MEDIA_TYPE_NATIVE -> AndroidMediaPlayer()
+                else -> IjkMediaPlayer()
             }
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
         }
