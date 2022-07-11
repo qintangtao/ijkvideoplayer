@@ -2,14 +2,14 @@ package me.tang.xvideoplayer.controller.tx
 
 import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.ViewGroup
+import android.graphics.Color
+import android.view.*
 import android.widget.LinearLayout
+import androidx.core.view.WindowInsetsCompat
 import me.tang.xvideoplayer.XUtil
 import me.tang.xvideoplayer.controller.tx.databinding.ItemChangeClarityBinding
 
-class TXChangeClarityDialog(context: Context) : Dialog(context) {
+class TXChangeClarityDialog(context: Context) : Dialog(context, R.style.fullDialog) {
 
     private lateinit var linearLayout: LinearLayout
 
@@ -38,10 +38,10 @@ class TXChangeClarityDialog(context: Context) : Dialog(context) {
                     val checkIndex = view.tag as Int
                     listener?.let {
                         if (checkIndex != currentIndex) {
-                            //val childCount = linearLayout.childCount - 1
-                            //for (j in 0..childCount) {
-                            //    linearLayout.getChildAt(j).isSelected = checkIndex == j
-                            //}
+                            val childCount = linearLayout.childCount - 1
+                            for (j in 0..childCount) {
+                                linearLayout.getChildAt(j).isSelected = checkIndex == j
+                            }
                             it.onClarityChanged(checkIndex)
                             currentIndex = checkIndex
                         } else {
@@ -79,12 +79,17 @@ class TXChangeClarityDialog(context: Context) : Dialog(context) {
             ViewGroup.MarginLayoutParams.MATCH_PARENT)
         setContentView(linearLayout, params)
 
-        val windowParams = window?.attributes
-        windowParams?.run {
-            width = XUtil.getScreenHeight(this@TXChangeClarityDialog.context)
-            height = XUtil.getScreenWidth(this@TXChangeClarityDialog.context)
+        //https://www.jianshu.com/p/9797d6448ad3
+        window?.decorView?.setPadding(0,0,0,0)
+
+        window?.attributes?.run {
+            width = WindowManager.LayoutParams.MATCH_PARENT
+            height = WindowManager.LayoutParams.MATCH_PARENT
+            horizontalMargin = 0F
         }
-        window?.attributes = windowParams
+
+        // DecorView 设置背景颜色，很重要，不然导致 Dialog 内容显示不全，有一部分内容会充当 padding
+        window?.decorView?.setBackgroundColor(Color.WHITE)
     }
 
     interface OnClarityChangedListener {

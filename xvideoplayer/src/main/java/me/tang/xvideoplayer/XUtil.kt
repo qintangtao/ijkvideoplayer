@@ -8,6 +8,7 @@ import android.content.res.Resources
 import android.graphics.Point
 import android.os.Build
 import android.view.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -155,16 +156,17 @@ object XUtil {
     }
 
     fun getScreenWidth(context: Context): Int {
-        return context.resources.displayMetrics.widthPixels
-        /*
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            return wm.currentWindowMetrics.bounds.width()
+        }
         val point = Point()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             wm.defaultDisplay.getRealSize(point)
         } else {
             wm.defaultDisplay.getSize(point)
         }
-        return point.x*/
+        return point.x
     }
 
     /**
@@ -173,15 +175,16 @@ object XUtil {
      * @return the height of screen, in pixel
      */
     fun getScreenHeight(context: Context): Int {
-        return context.resources.displayMetrics.heightPixels
-        /*
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            return wm.currentWindowMetrics.bounds.height()
+        }
         val point = Point()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             wm.defaultDisplay.getRealSize(point)
         } else {
             wm.defaultDisplay.getSize(point)
         }
-        return point.y*/
+        return point.y
     }
 }

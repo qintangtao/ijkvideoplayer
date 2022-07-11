@@ -13,4 +13,24 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="fullDialog"  parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="windowActionBar">false</item>
+
+        <item name="android:windowFullscreen">true</item>
+        <!-- 是否有边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!--是否在悬浮Activity之上  -->
+        <item name="android:windowIsFloating">true</item>
+        <!--标题  -->
+        <item name="android:windowNoTitle">true</item>
+        <!--阴影
+        <item name="android:windowIsTranslucent">true</item>  -->
+        <!--透明背景-->
+        <item name="android:background">@android:color/white</item>
+        <!--窗口背景透明
+        <item name="android:windowBackground">@android:color/transparent</item>-->
+        <!--弹窗背景是否变暗
+        <item name="android:backgroundDimEnabled">false</item>-->
+    </style>
 </resources>

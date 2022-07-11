@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         XLog.d("MainActivity onCreate")
-        XLog.d("SDK_INT: ${Build.VERSION.SDK_INT}")
+        XLog.d("SDK_INT: ${Build.VERSION.SDK_INT}, width:${XUtil.getScreenWidth(this)}, height:${XUtil.getScreenHeight(this)}")
+
 
         val controller = TXVideoController(this)
         controller.setTitle("之心恋人")

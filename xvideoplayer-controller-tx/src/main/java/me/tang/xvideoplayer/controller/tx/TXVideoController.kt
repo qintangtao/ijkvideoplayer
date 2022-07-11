@@ -61,6 +61,8 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
         }
 
         binding.clarity.text = clarities[defaultClaritieIndex].grade
+        //if (clarities.size > 1)
+        //    binding.clarity.visibility = View.VISIBLE
 
         // 初始化切换清晰度对话框
         clarityDialog.setClarityGrade(grades, defaultClaritieIndex)
