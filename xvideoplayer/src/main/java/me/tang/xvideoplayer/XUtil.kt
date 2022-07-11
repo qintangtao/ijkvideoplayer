@@ -7,11 +7,13 @@ import android.content.ContextWrapper
 import android.content.res.Resources
 import android.graphics.Point
 import android.os.Build
-import android.view.ContextThemeWrapper
-import android.view.WindowInsets
-import android.view.WindowManager
+import android.view.*
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 object XUtil {
 
@@ -53,11 +55,18 @@ object XUtil {
 
     @SuppressLint("RestrictedApi")
     fun showActionBar(context: Context) {
-        val ab = getAppCompActivity(context)?.supportActionBar
-        ab?.run {
+        getAppCompActivity(context)?.supportActionBar?.run {
             setShowHideAnimationEnabled(false)
             show()
         }
+        scanForActivity(context)?.window?.let {
+            //WindowCompat.setDecorFitsSystemWindows(it, false)
+            ViewCompat.getWindowInsetsController(it.decorView)?.run {
+                show(WindowInsetsCompat.Type.systemBars())
+                XLog.d("showActionBar -> ")
+            }
+        }
+        return
         scanForActivity(context)?.window?.run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 insetsController?.show(WindowInsets.Type.statusBars())
@@ -68,15 +77,25 @@ object XUtil {
 
     @SuppressLint("RestrictedApi")
     fun hideActionBar(context: Context) {
-        val ab = getAppCompActivity(context)?.supportActionBar
-        ab?.run {
+        getAppCompActivity(context)?.supportActionBar?.run {
             setShowHideAnimationEnabled(false)
             hide()
         }
+
+        scanForActivity(context)?.window?.let {
+            WindowCompat.setDecorFitsSystemWindows(it, false)
+            ViewCompat.getWindowInsetsController(it.decorView)?.run {
+                hide(WindowInsetsCompat.Type.systemBars())
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                XLog.d("hideActionBar -> ")
+            }
+        }
+
+        return
         scanForActivity(context)?.window?.run {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 insetsController?.hide(WindowInsets.Type.statusBars())
-            else
+            }else
                 setFlags(
                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.TypedArray
 import android.os.BatteryManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -19,14 +18,14 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.tang.xvideoplayer.*
-import me.tang.xvideoplayer.controller.tx.databinding.TxVideoPlayerControllerBinding
+import me.tang.xvideoplayer.controller.tx.databinding.TxVideoControllerBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeekBarChangeListener,
     TXChangeClarityDialog.OnClarityChangedListener {
 
-    private lateinit var binding: TxVideoPlayerControllerBinding
+    private lateinit var binding: TxVideoControllerBinding
 
     // 是否已经注册了电池广播
     private var hasRegisterBatteryReceiver = false
@@ -343,7 +342,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        binding = TxVideoPlayerControllerBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = TxVideoControllerBinding.inflate(LayoutInflater.from(context), this, true)
         binding.centerStart.setOnClickListener(this)
         binding.back.setOnClickListener(this)
         binding.restartOrPause.setOnClickListener(this)

@@ -222,7 +222,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_player_back"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/title"
@@ -268,6 +268,7 @@
         android:gravity="center_vertical"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView

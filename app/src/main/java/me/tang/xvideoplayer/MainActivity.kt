@@ -1,6 +1,7 @@
 package me.tang.xvideoplayer
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         XLog.d("MainActivity onCreate")
+        XLog.d("SDK_INT: ${Build.VERSION.SDK_INT}")
 
         val controller = TXVideoController(this)
         controller.setTitle("之心恋人")
