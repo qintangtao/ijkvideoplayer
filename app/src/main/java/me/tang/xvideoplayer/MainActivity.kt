@@ -64,6 +64,12 @@ class MainActivity : AppCompatActivity() {
         binding.btnRecycler.setOnClickListener {
             startActivity(Intent(this, RecyclerViewActivity::class.java))
         }
+        binding.btnTinyWindow.setOnClickListener {
+            if (binding.xVideoPlayer.isTinyWindow)
+                binding.xVideoPlayer.exitTinyWindow()
+            else
+                binding.xVideoPlayer.enterTinyWindow()
+        }
     }
 
     override fun onRestart() {

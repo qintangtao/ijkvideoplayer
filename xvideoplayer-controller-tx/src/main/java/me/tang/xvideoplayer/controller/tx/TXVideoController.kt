@@ -36,7 +36,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
 
     // 视频链接地址
     private var clarities: List<XClarity>? = null
-    private var defaultClaritieIndex = 0
+    private var defaultClarityIndex = 0
     private val clarityDialog by lazy { TXChangeClarityDialog(this.context) }
 
     constructor(context: Context) : this(context, null)
@@ -53,29 +53,29 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
         if (clarities.isEmpty()) return
 
         this.clarities = clarities
-        this.defaultClaritieIndex = defaultIndex
+        this.defaultClarityIndex = defaultIndex
 
         val grades = ArrayList<String>()
         clarities.forEach {
             grades.add("${it.grade} ${it.p}")
         }
 
-        binding.clarity.text = clarities[defaultClaritieIndex].grade
+        binding.clarity.text = clarities[defaultClarityIndex].grade
         //if (clarities.size > 1)
         //    binding.clarity.visibility = View.VISIBLE
 
         // 初始化切换清晰度对话框
-        clarityDialog.setClarityGrade(grades, defaultClaritieIndex)
+        clarityDialog.setClarityGrade(grades, defaultClarityIndex)
         clarityDialog.setOnClarityChangedListener(this)
 
         // 给播放器配置视频链接地址
-        _videoPlayer?.setUp(clarities.get(defaultClaritieIndex).url, null)
+        _videoPlayer?.setUp(clarities.get(defaultClarityIndex).url, null)
     }
 
     override fun setVideoPlayer(videoPlayer: IVideoPlayer) {
         super.setVideoPlayer(videoPlayer)
         if ((clarities?.size ?: 0) > 1) {
-            clarities?.get(defaultClaritieIndex)?.let { videoPlayer.setUp(it.url, null) }
+            clarities?.get(defaultClarityIndex)?.let { videoPlayer.setUp(it.url, null) }
         }
     }
 
@@ -275,6 +275,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
                 cancelUpdateProgressTimer()
                 setTopBottomVisible(false)
                 binding.run {
+                    centerStart.visibility = View.GONE
                     top.visibility = View.VISIBLE
                     error.visibility = View.VISIBLE
                 }
@@ -290,7 +291,7 @@ class TXVideoController : XVideoController, View.OnClickListener, SeekBar.OnSeek
         }
     }
 
-    override fun onPlayModeChanged(mode: Int) {
+    override fun onWindowModeChanged(mode: Int) {
         when (mode) {
             XVideoPlayer.WINDOW_MODE_NORMAL -> {
                 binding.run {

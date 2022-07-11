@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 abstract class XVideoController : FrameLayout, View.OnTouchListener,
-    IVideoPlayer.OnPlayStateListener, IVideoPlayer.OnPlayModeListener {
+    IVideoPlayer.OnPlayStateListener, IVideoPlayer.OnWindowModeListener {
 
     companion object {
         const val THRESHOLD = 80
@@ -56,7 +56,7 @@ abstract class XVideoController : FrameLayout, View.OnTouchListener,
     open fun setVideoPlayer(videoPlayer: IVideoPlayer) {
         _videoPlayer = videoPlayer
         _videoPlayer?.setOnPlayStateListener(this)
-        _videoPlayer?.setOnPlayModeListener(this)
+        _videoPlayer?.setOnWindowModeListener(this)
     }
 
     fun startUpdateProgressTimer() {

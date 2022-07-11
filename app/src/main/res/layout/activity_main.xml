@@ -85,6 +85,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btnAdapter"
         android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
         android:text="Recycler" />
+
+    <Button
+        android:id="@+id/btnTinyWindow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/btnOriginal"
+        app:layout_constraintLeft_toRightOf="@+id/btnRecycler"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:text="TinyWindow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

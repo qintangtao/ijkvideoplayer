@@ -186,7 +186,7 @@ interface IVideoPlayer {
 
     fun setOnPlayStateListener(listener: OnPlayStateListener?)
 
-    fun setOnPlayModeListener(listener: OnPlayModeListener?)
+    fun setOnWindowModeListener(listener: OnWindowModeListener?)
 
     /*--------------------
      * Listeners
@@ -195,7 +195,7 @@ interface IVideoPlayer {
         fun onPlayStateChanged(state: Int)
     }
 
-    interface OnPlayModeListener {
-        fun onPlayModeChanged(mode: Int)
+    interface OnWindowModeListener {
+        fun onWindowModeChanged(mode: Int)
     }
 }

@@ -9,7 +9,6 @@ import me.tang.xvideoplayer.databinding.ActivityRecyclerViewBinding
 
 class RecyclerViewActivity : BaseActivity<RecyclerViewViewModel, ActivityRecyclerViewBinding>() {
 
-
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.viewModel = viewModel
 

@@ -177,22 +177,22 @@ class XVideoPlayer : FrameLayout
             }
         }
 
-    private var mOnPlayModeListener: IVideoPlayer.OnPlayModeListener? = null
+    private var onWindowModeListener: IVideoPlayer.OnWindowModeListener? = null
     private var _windowMode = WINDOW_MODE_NORMAL
         set(value) {
             if (field != value) {
                 field = value
-                mOnPlayModeListener?.onPlayModeChanged(field)
+                onWindowModeListener?.onWindowModeChanged(field)
             }
         }
     override val windowMode get() = _windowMode
 
-    private var mOnPlayStateListener: IVideoPlayer.OnPlayStateListener? = null
+    private var onPlayStateListener: IVideoPlayer.OnPlayStateListener? = null
     private var _playState: Int = PLAY_STATE_IDLE
             set(value) {
                   if (field != value) {
                       field = value
-                      mOnPlayStateListener?.onPlayStateChanged(field)
+                      onPlayStateListener?.onPlayStateChanged(field)
                   }
             }
     override val playState get() = _playState
@@ -501,11 +501,11 @@ class XVideoPlayer : FrameLayout
     }
 
     override fun setOnPlayStateListener(listener: IVideoPlayer.OnPlayStateListener?) {
-        mOnPlayStateListener = listener
+        onPlayStateListener = listener
     }
 
-    override fun setOnPlayModeListener(listener: IVideoPlayer.OnPlayModeListener?) {
-        mOnPlayModeListener = listener
+    override fun setOnWindowModeListener(listener: IVideoPlayer.OnWindowModeListener?) {
+        onWindowModeListener = listener
     }
 
     override fun onSurfaceTextureAvailable(surface2: SurfaceTexture, width: Int, height: Int) {
